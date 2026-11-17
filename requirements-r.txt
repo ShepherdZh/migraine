@@ -1,0 +1,20 @@
+# R / Bioconductor packages for paper_code *.R scripts (install in a separate R env).
+# Versions recorded in Supplementary Table S6 (authors' server).
+#
+# Suggested: use Bioconductor 3.18+ and install manually, e.g.:
+#   install.packages("Seurat")
+#   remotes::install_github("sqjin/CellChat")
+#   BiocManager::install(c("ArchR", "monocle3", ...))
+#
+# Mapping:
+#   04–06_fig1_*     → ArchR 1.0.3
+#   09–10_fig3_*     → CellChat 1.6.1, Seurat 5.4.0
+#   12_fig4_*        → Monocle3 1.4.26
+#   14 (Enrichr)     → web API; clusterProfiler 4.18.4 optional for local GO
+
+ArchR==1.0.3
+Seurat==5.4.0
+CellChat==1.6.1
+monocle3==1.4.26
+clusterProfiler==4.18.4
+fgsea==1.36.2
