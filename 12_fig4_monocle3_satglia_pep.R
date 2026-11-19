@@ -7,7 +7,7 @@ suppressPackageStartupMessages({
   library(dplyr)
 })
 
-ROOT <- "/opt/NAS/RD/zym/test/migraine"
+ROOT <- Sys.getenv("MIGRAINE_REPO_ROOT", "/opt/NAS/RD/zym/test/migraine")
 OUT <- file.path(ROOT, "results/monocle3/satglia_pep")
 dir.create(OUT, recursive = TRUE, showWarnings = FALSE)
 
@@ -29,12 +29,9 @@ cds <- reduce_dimension(cds, verbose = FALSE)
 cds <- cluster_cells(cds, verbose = FALSE)
 cds <- learn_graph(cds, verbose = FALSE)
 
-# Root at Satglia (glia → nociceptor axis); prefer Naive Satglia if present
-satglia_cells <- rownames(meta)[meta$subtype == "Satglia"]
-if (any(meta$subtype == "Satglia" & meta$model == "Naive")) {
-  satglia_cells <- rownames(meta)[meta$subtype == "Satglia" & meta$model == "Naive"]
-}
-cds <- order_cells(cds, root_cells = satglia_cells, verbose = FALSE)
+# Root pseudotime at Naive Satglia (GSE197289 TG baseline glia)
+root_cells <- rownames(meta)[meta$subtype == "Satglia" & meta$model == "Naive"]
+cds <- order_cells(cds, root_cells = root_cells, verbose = FALSE)
 
 saveRDS(cds, file.path(OUT, "cds_satglia_pep.rds"))
 
