@@ -4,8 +4,6 @@
 Monocle3 embedding is built on all Satglia, but the activation axis paired with
 CellOracle is *inside Satglia_L0*: bottom ≈ Naive, top ≈ a minority of IS cells.
 PT gradient and cosine are therefore fitted on L0 cells only.
-
-Figure text is English to avoid CJK tofu in matplotlib. Captions live in the PDF.
 """
 from __future__ import annotations
 
