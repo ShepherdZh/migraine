@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-"""Enrichr per subcluster_r01 — one bar chart per subcluster (no heatmap)."""
 from __future__ import annotations
 
 import re
