@@ -1,6 +1,5 @@
 import sys
 #!/usr/bin/env python3
-"""Download pycistarget motif logos and compose PNG panels for web report."""
 from __future__ import annotations
 
 import re
