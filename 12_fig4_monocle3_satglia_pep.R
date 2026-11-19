@@ -7,7 +7,7 @@ suppressPackageStartupMessages({
   library(dplyr)
 })
 
-ROOT <- Sys.getenv("MIGRAINE_REPO_ROOT", "/opt/NAS/RD/zym/test/migraine")
+ROOT <- Sys.getenv("MIGRAINE_REPO_ROOT", "/pathto/migraine")
 OUT <- file.path(ROOT, "results/monocle3/satglia_pep")
 dir.create(OUT, recursive = TRUE, showWarnings = FALSE)
 
