@@ -1,6 +1,6 @@
-import sys
 #!/usr/bin/env python3
 """SCENIC+ / ArchR P2G figures for web report (partial SCENIC+ track — no full eRegulons)."""
+import sys
 from __future__ import annotations
 
 from itertools import combinations
@@ -39,7 +39,7 @@ def r2g_link_counts(df: pd.DataFrame) -> pd.Series:
 
 def build_rank_table(min_abs_rho: float = 0.3) -> pd.DataFrame:
     counts = r2g_link_counts(load_full_r2g(min_abs_rho))
-    tfs = set(TF_FILE.read_text().split()) if TF_FILE.exists() else set()
+    tfs = set(TF_FILE.read_text().split())
     rows = []
     for rank, (gene, n_links) in enumerate(counts.items(), start=1):
         rows.append(
@@ -177,8 +177,6 @@ def plot_hub_genes(p2g: pd.DataFrame, top_n: int = 20) -> None:
 
 
 def plot_calca_locus_neighbors() -> None:
-    if not CALCA_SHARE.exists():
-        return
     raw = pd.read_csv(CALCA_SHARE)
     df = raw.rename(columns={raw.columns[0]: "gene", raw.columns[1]: "n_shared_peaks"})
     df = df.sort_values("n_shared_peaks", ascending=False).head(12)
@@ -197,16 +195,14 @@ def main() -> None:
     r2g = pd.read_csv(R2G_FOCUS)
     plot_focus_r2g_counts(r2g)
     plot_coreg_network(r2g)
-    if R2G_FULL.exists():
-        genome_rank = plot_r2g_top_genome(top_n=20)
-        tf_rank = plot_r2g_top_tfs(top_n=20)
-        prdm16 = genome_rank.loc[genome_rank["gene"] == "Prdm16"].iloc[0]
-        prdm16_tf = tf_rank.loc[tf_rank["gene"] == "Prdm16"].iloc[0]
-        print(
-            f"Genome-wide Prdm16: rank {int(prdm16['rank'])}, {int(prdm16['n_links'])} links; "
-            f"TF-only rank {int(prdm16_tf['tf_rank'])}, {int(prdm16_tf['n_links'])} links"
-        )
-    # mm10 hub genes — use gene column only via chunked read if needed; file ~287k rows is OK
+    genome_rank = plot_r2g_top_genome(top_n=20)
+    tf_rank = plot_r2g_top_tfs(top_n=20)
+    prdm16 = genome_rank.loc[genome_rank["gene"] == "Prdm16"].iloc[0]
+    prdm16_tf = tf_rank.loc[tf_rank["gene"] == "Prdm16"].iloc[0]
+    print(
+        f"Genome-wide Prdm16: rank {int(prdm16['rank'])}, {int(prdm16['n_links'])} links; "
+        f"TF-only rank {int(prdm16_tf['tf_rank'])}, {int(prdm16_tf['n_links'])} links"
+    )
     p2g = pd.read_csv(P2G_MM10, usecols=["gene"])
     plot_hub_genes(p2g)
     plot_calca_locus_neighbors()
