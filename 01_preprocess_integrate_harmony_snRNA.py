@@ -1,5 +1,5 @@
-import sys
 #!/usr/bin/env python3
+import sys
 """
 Re-integrate mouse snRNA FROM SCRATCH using only Naive / IS / CSD.
 
@@ -47,16 +47,11 @@ def main():
     adata = adata[keep].copy()
     print("after Naive/IS/CSD subset (pre-reembed)", adata.shape, adata.obs["model"].value_counts().to_dict())
 
-    # Prefer raw counts for HVG if present
-    if adata.raw is not None:
-        print("Using .raw counts as .X for re-integration")
-        # rebuild from raw
-        X = adata.raw.X.copy()
-        var = adata.raw.var.copy() if adata.raw.var is not None and len(adata.raw.var) else adata.var.copy()
-        obs = adata.obs.copy()
-        adata = sc.AnnData(X=X, obs=obs, var=var)
-    else:
-        print("WARN: no .raw; re-integrating from current .X")
+    # mouse_rna_full.h5ad stores counts in .raw (see DATA.md)
+    X = adata.raw.X.copy()
+    var = adata.raw.var.copy()
+    obs = adata.obs.copy()
+    adata = sc.AnnData(X=X, obs=obs, var=var)
 
     # Drop prior embeddings so we cannot accidentally reuse them
     for k in list(adata.obsm.keys()):
@@ -73,37 +68,20 @@ def main():
     sc.pp.log1p(adata)
     adata.layers["lognorm"] = adata.X.copy()
 
-    # HVG: try seurat_v3 on counts via a copy if needed
-    try:
-        # If we only have lognorm, use seurat flavor
-        sc.pp.highly_variable_genes(adata, n_top_genes=3000, flavor="seurat")
-    except Exception as e:
-        print("HVG fallback:", e)
-        sc.pp.highly_variable_genes(adata, n_top_genes=3000)
-
+    sc.pp.highly_variable_genes(adata, n_top_genes=3000, flavor="seurat")
     adata_hvg = adata[:, adata.var["highly_variable"]].copy()
     sc.pp.scale(adata_hvg, max_value=10)
     sc.tl.pca(adata_hvg, n_comps=50, svd_solver="arpack")
 
-    use_rep = "X_pca"
-    # Harmony by sample if available
-    try:
-        import harmonypy as hm
+    import harmonypy as hm
 
-        meta = adata_hvg.obs[["sample_name"]].copy()
-        ho = hm.run_harmony(adata_hvg.obsm["X_pca"], meta, ["sample_name"])
-        z_corr = np.asarray(ho.Z_corr)
-        # harmonypy returns (n_pcs, n_cells); scanpy expects (n_cells, n_pcs)
-        if z_corr.shape[0] == adata_hvg.n_obs:
-            adata_hvg.obsm["X_pca_harmony"] = z_corr
-        elif z_corr.shape[1] == adata_hvg.n_obs:
-            adata_hvg.obsm["X_pca_harmony"] = z_corr.T
-        else:
-            raise ValueError(f"Unexpected Harmony shape {z_corr.shape} for n_obs={adata_hvg.n_obs}")
-        use_rep = "X_pca_harmony"
-        print("Harmony done on sample_name → X_pca_harmony", adata_hvg.obsm["X_pca_harmony"].shape)
-    except Exception as e:
-        print("Harmony skipped:", e)
+    meta = adata_hvg.obs[["sample_name"]].copy()
+    ho = hm.run_harmony(adata_hvg.obsm["X_pca"], meta, ["sample_name"])
+    z_corr = np.asarray(ho.Z_corr)
+    # harmonypy Z_corr is (n_pcs, n_cells); neighbors expect (n_cells, n_pcs)
+    harmony = z_corr.T if z_corr.shape[1] == adata_hvg.n_obs else z_corr
+    adata_hvg.obsm["X_pca_harmony"] = harmony
+    use_rep = "X_pca_harmony"
 
     sc.pp.neighbors(adata_hvg, n_neighbors=20, n_pcs=40, use_rep=use_rep)
     sc.tl.umap(adata_hvg, min_dist=0.3)
@@ -112,8 +90,7 @@ def main():
     # Copy embedding back to full-gene adata for saving
     adata.obsm["X_umap"] = adata_hvg.obsm["X_umap"].copy()
     adata.obsm["X_pca"] = adata_hvg.obsm["X_pca"].copy()
-    if "X_pca_harmony" in adata_hvg.obsm:
-        adata.obsm["X_pca_harmony"] = adata_hvg.obsm["X_pca_harmony"].copy()
+    adata.obsm["X_pca_harmony"] = adata_hvg.obsm["X_pca_harmony"].copy()
     adata.obs["leiden_r1"] = adata_hvg.obs["leiden_r1"].values
     adata.uns["neighbors"] = adata_hvg.uns["neighbors"]
     adata.obsp["distances"] = adata_hvg.obsp["distances"]
