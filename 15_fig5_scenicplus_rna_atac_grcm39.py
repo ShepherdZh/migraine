@@ -26,8 +26,8 @@ from project_paths import ROOT
 OUT = ROOT / "results/scenicplus/mouse/run/egrn_pycistopic"
 CISTOPIC = ROOT / "results/scenicplus/mouse/run/cistopic_obj.pkl"
 RNA = ROOT / "results/scenicplus/mouse/run/rna.h5ad"
-CTX_DB = Path("/opt/NAS/RD/pinned/scenic/feather_GRCM38/mm10_screen_v10_clust.regions_vs_motifs.rankings.feather")
-MOTIF_TBL = Path("/opt/NAS/RD/pinned/scenic/motifs-v10nr_clust-nr.mgi-m0.001-o0.0.tbl")
+CTX_DB = Path("/pathto/feather_GRCM38/mm10_screen_v10_clust.regions_vs_motifs.rankings.feather")
+MOTIF_TBL = Path("/pathto/motifs-v10nr_clust-nr.mgi-m0.001-o0.0.tbl")
 FOCUS_GENES = ["Calca", "Calcb", "Ramp1", "Prdm16", "Ptn", "Tac1", "Runx1", "Stat6", "Mef2d"]
 
 
