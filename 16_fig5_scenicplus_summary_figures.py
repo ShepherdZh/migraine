@@ -16,7 +16,7 @@ from project_paths import ROOT
 OUT = ROOT / "results/reports/web/fig"
 R2G_FOCUS = ROOT / "results/scenicplus/mouse/run/egrn_pycistopic/region_to_gene_pycistopic.csv"
 R2G_FULL = ROOT / "results/scenicplus/mouse/run/egrn_full/region_to_gene_adj.tsv"
-TF_FILE = Path("/opt/NAS/RD/pinned/scenic/allTFs_mm.txt")
+TF_FILE = Path("/pathto/allTFs_mm.txt")
 RANK_OUT = ROOT / "results/scenicplus/mouse/run/egrn_pycistopic/r2g_gene_rankings.csv"
 P2G_MM10 = ROOT / "results/scenicplus/mouse_mm10/egrn/region_to_gene_from_archr.csv"
 CALCA_SHARE = ROOT / "results/scenicplus/calca_satglia_pep/genes_sharing_calca_linked_peaks_mm10.csv"
