@@ -28,8 +28,8 @@ OUT = ROOT / "results/scenicplus/mouse/run/egrn_full"
 CISTOPIC = ROOT / "results/scenicplus/mouse/run/cistopic_obj.pkl"
 RNA = ROOT / "results/scenicplus/mouse/run/rna.h5ad"
 PYCIS = ROOT / "results/scenicplus/mouse/run/egrn_pycistopic"
-CTX_DB = Path("/opt/NAS/RD/pinned/scenic/feather_GRCM38/mm10_screen_v10_clust.regions_vs_motifs.rankings.feather")
-MOTIF_TBL = Path("/opt/NAS/RD/pinned/scenic/motifs-v10nr_clust-nr.mgi-m0.001-o0.0.tbl")
+CTX_DB = Path("/pathto/feather_GRCM38/mm10_screen_v10_clust.regions_vs_motifs.rankings.feather")
+MOTIF_TBL = Path("/pathto/motifs-v10nr_clust-nr.mgi-m0.001-o0.0.tbl")
 STATUS = OUT / "pipeline_status.json"
 N_CPU = int(os.environ.get("SCENICPLUS_N_CPU", "8"))
 
