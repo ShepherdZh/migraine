@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-"""SCENIC+ / ArchR P2G figures for web report (partial SCENIC+ track — no full eRegulons)."""
 import sys
 from __future__ import annotations
 
