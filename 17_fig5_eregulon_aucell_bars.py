@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Full SCENIC+ eRegulon + AUCell pipeline (resume-safe).
+Full SCENIC+ eRegulon + AUCell pipeline.
 
 Prerequisites: cistopic_obj.pkl, rna.h5ad, pinned mm10 cisTarget feather DB.
 Outputs: results/scenicplus/mouse/run/egrn_full/
