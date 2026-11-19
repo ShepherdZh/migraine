@@ -2,7 +2,7 @@
 # Regenerate Fig. 1d PNG only (grcm39, single-column groupBy legend).
 suppressPackageStartupMessages(library(ArchR))
 addArchRThreads(threads = 8)
-ROOT <- Sys.getenv("MIGRAINE_REPO_ROOT", "/opt/NAS/RD/zym/test/migraine")
+ROOT <- Sys.getenv("MIGRAINE_REPO_ROOT", "/pathto/migraine")
 OUT <- file.path(ROOT, "results/figures/paper")
 source(file.path(ROOT, "paper_code/05_fig1_archr_heatmap_onecol_legend.R"), local = TRUE)
 proj <- loadArchRProject(file.path(ROOT, "results/archr/mouse/ArchR_TG_mouse"), showLogo = FALSE)
