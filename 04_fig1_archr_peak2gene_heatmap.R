@@ -5,7 +5,7 @@ suppressPackageStartupMessages(library(ArchR))
 addArchRThreads(threads = 8)
 addArchRGenome("mm10")
 
-ROOT <- Sys.getenv("MIGRAINE_REPO_ROOT", "/opt/NAS/RD/zym/test/migraine")
+ROOT <- Sys.getenv("MIGRAINE_REPO_ROOT", "/pathto/migraine")
 OUT <- file.path(ROOT, "results/figures/paper")
 PROJ <- file.path(ROOT, "results/archr/mouse/ArchR_TG_mouse")
 dir.create(OUT, recursive = TRUE, showWarnings = FALSE)
