@@ -5,7 +5,7 @@ suppressPackageStartupMessages({
   suppressPackageStartupMessages(library(ComplexHeatmap))
 })
 
-ROOT <- if (dir.exists("/data/results")) "/data" else "/opt/NAS/RD/zym/test/migraine"
+ROOT <- Sys.getenv("MIGRAINE_REPO_ROOT", "/opt/NAS/RD/zym/test/migraine")
 OUT <- file.path(ROOT, "results/cellchat/satglia_pep_subcluster")
 FIG <- file.path(OUT, "figures_merged")
 RDS <- file.path(OUT, "cellchat_subcluster_merged.rds")
@@ -21,16 +21,8 @@ labels <- levels(cellchat@idents)
 
 save_png <- function(path, w, h, plot_fun) {
   png(path, width = w * 200, height = h * 200, res = 200)
-  ok <- tryCatch({ plot_fun(); TRUE }, error = function(e) {
-    message("Plot error (", basename(path), "): ", conditionMessage(e))
-    plot.new(); FALSE
-  })
+  plot_fun()
   dev.off()
-  if (ok && file.exists(path) && file.info(path)$size > 20000) {
-    message("Wrote ", path, " (", file.info(path)$size, " bytes)")
-  } else {
-    message("FAILED/small: ", path)
-  }
 }
 
 # Keep Satglia + PEP subclusters only for focused circle plots
@@ -68,10 +60,6 @@ save_png(file.path(FIG, "Fig_cellchat_subcluster_incoming.png"), 10, 8, function
 # Pathways: migraine-relevant, exclude BMP (fibroblast baseline)
 pathways <- c("PTN", "CADM", "LAMININ", "NCAM")
 for (pw in pathways) {
-  if (!(pw %in% pathway_names)) {
-    message("Skip missing pathway: ", pw)
-    next
-  }
   mat <- filter_mat(prob_arr[, , pw], top_n = 10)
   outp <- file.path(FIG, paste0("Fig_cellchat_circle_pathway_", pw, ".png"))
   save_png(outp, 10, 10, function(m = mat, p = pw) {
@@ -90,7 +78,6 @@ top_pairs <- head(unique(sat_pep$interaction_name), 5)
 
 for (nm in top_pairs) {
   pw <- sat_pep[sat_pep$interaction_name == nm, "pathway_name"][1]
-  if (!(pw %in% pathway_names)) next
   mat <- filter_mat(prob_arr[, , pw], top_n = 8)
   safe <- gsub("[^A-Za-z0-9_+-]", "_", nm)
   outp <- file.path(FIG, paste0("Fig_cellchat_circle_LR_", safe, ".png"))
@@ -103,10 +90,8 @@ for (nm in top_pairs) {
 # Aggregated Satglia↔PEP net (filtered)
 agg <- matrix(0, length(focus_labels), length(focus_labels), dimnames = list(focus_labels, focus_labels))
 for (pw in pathways) {
-  if (pw %in% pathway_names) {
-    m <- prob_arr[focus_idx, focus_idx, pw]
-    agg <- agg + m
-  }
+  m <- prob_arr[focus_idx, focus_idx, pw]
+  agg <- agg + m
 }
 agg <- trim_edges(agg, top_n = 15)
 save_png(file.path(FIG, "Fig_cellchat_subcluster_circle.png"), 10, 10, function() {
