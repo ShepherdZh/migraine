@@ -1,11 +1,5 @@
 import sys
 #!/usr/bin/env python3
-"""
-补跑 SCENIC+ pycistopic track on GRCm39 inputs (cisTopic → region-to-gene → pycistarget).
-
-Uses existing cistopic_obj.pkl + scenicplus RNA/ATAC exports. Does NOT replace ArchR P2G;
-writes parallel outputs under results/scenicplus/mouse/run/egrn_pycistopic/.
-"""
 from __future__ import annotations
 
 import argparse
