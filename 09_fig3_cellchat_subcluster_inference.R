@@ -5,7 +5,7 @@ suppressPackageStartupMessages({
   library(Matrix)
 })
 
-ROOT <- Sys.getenv("MIGRAINE_REPO_ROOT", "/opt/NAS/RD/zym/test/migraine")
+ROOT <- Sys.getenv("MIGRAINE_REPO_ROOT", "/pathto/migraine")
 OUT <- file.path(ROOT, "results/cellchat/satglia_pep_subcluster")
 FIG <- file.path(OUT, "figures_merged")
 RDS <- file.path(OUT, "cellchat_subcluster_merged.rds")
