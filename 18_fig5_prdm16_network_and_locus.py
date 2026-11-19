@@ -1,6 +1,5 @@
 import sys
 #!/usr/bin/env python3
-"""SCENIC+ Prdm16 eRegulon + AUCell figures for web report."""
 from __future__ import annotations
 
 from pathlib import Path
