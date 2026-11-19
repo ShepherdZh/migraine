@@ -5,7 +5,7 @@ suppressPackageStartupMessages({
   library(Matrix)
 })
 
-ROOT <- if (dir.exists("/data/results")) "/data" else "/opt/NAS/RD/zym/test/migraine"
+ROOT <- Sys.getenv("MIGRAINE_REPO_ROOT", "/opt/NAS/RD/zym/test/migraine")
 OUT <- file.path(ROOT, "results/cellchat/satglia_pep_subcluster")
 FIG <- file.path(OUT, "figures_merged")
 RDS <- file.path(OUT, "cellchat_subcluster_merged.rds")
@@ -32,23 +32,13 @@ cellchat <- computeCommunProbPathway(cellchat)
 cellchat <- aggregateNet(cellchat)
 cellchat <- netAnalysis_computeCentrality(cellchat, slot.name = "netP")
 
-tryCatch(
-  saveRDS(cellchat, RDS),
-  error = function(e) {
-    alt <- file.path(tempdir(), "cellchat_subcluster_merged.rds")
-    message("saveRDS to OUT failed (", conditionMessage(e), "); writing to ", alt)
-    saveRDS(cellchat, alt)
-    message("Copy manually if needed: ", alt)
-  }
-)
+saveRDS(cellchat, RDS)
 df.net <- subsetCommunication(cellchat)
 write.csv(df.net, LR_CSV, row.names = FALSE)
 
 save_png <- function(path, w, h, plot_fun) {
   png(path, width = w * 200, height = h * 200, res = 200)
-  tryCatch({
-    if (is.function(plot_fun)) plot_fun()
-  }, error = function(e) message("Plot error: ", conditionMessage(e)))
+  plot_fun()
   dev.off()
 }
 
